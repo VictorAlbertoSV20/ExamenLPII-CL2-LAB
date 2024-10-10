@@ -1,0 +1,96 @@
+create database dbventas;
+use dbventas;
+
+create table categorias(
+idcate		varchar(10) primary key,
+descripcion	varchar(30) not null
+);
+
+
+create table rol(
+idrol int auto_increment primary key,
+descripcion varchar(100)
+);
+
+create table usuario(
+idusuario bigint auto_increment primary key,
+nombres varchar(100),
+apellidos varchar(100),
+usuario varchar(50),
+clave varchar(50),
+idrol int,
+constraint fk_usuario_rol foreign key (idrol) references rol(idrol)
+);
+
+
+
+
+create table producto(
+id_prod		int AUTO_INCREMENT primary key,
+descripcion	varchar(100) ,
+precio		decimal(8,3),
+stock		int,
+idcate		varchar(10) ,
+constraint fk_producto_categoria foreign key (idcate) references categorias(idcate)
+);
+
+
+create table cliente(
+idclie 			int primary key,
+razon_soc		varchar(100),
+nombre_ciudad	varchar(100),
+direccion_clie	varchar(100),
+telefono		varchar(100)
+);
+
+create table asesor_vta(
+codasesor	int auto_increment primary key,
+nombreas	varchar(50),
+email		varchar(60),
+telefono	varchar(15)
+);
+
+create table ventas(
+    nroventa   varchar(10) primary key,
+    fecha      date,
+    idclie     int,
+    codasesor  int,
+    subtotal   decimal(8,2),
+    igv        decimal(8,2),
+    total      decimal(8,2),
+    constraint fk_ventas_cliente foreign key (idclie) references cliente(idclie),
+    constraint fk_ventas_asesor foreign key (codasesor) references asesor_vta(codasesor)
+);
+
+
+create table detalle_ventas(
+nroventa	varchar(10) references ventas,
+idproducto	int references producto,
+cantidad	decimal(8,2),
+precio_vta	decimal(8,2),
+monto		decimal(8,2),
+primary key(nroventa,idproducto)
+);
+
+
+insert into categorias (idcate,descripcion)
+values ('C01','Categoria 1');
+insert into categorias (idcate,descripcion)
+values ('C02','Categoria 2');
+
+
+insert into producto
+(descripcion,precio,stock,idcate)values
+('camote',20,10,'C01');
+
+
+
+insert into rol (descripcion) values ('Administrador'),('Usuario');
+
+insert into usuario (nombres,apellidos,usuario,clave,idrol)
+values('edu','chavez','admin','123',1);
+
+insert into cliente (idclie,razon_soc,nombre_ciudad,direccion_clie,telefono)
+values(1,'empresa sac23','lima','av.los heroes 1222','123-4567');
+
+
